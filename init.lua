@@ -11,6 +11,15 @@ opt.tabstop = 2;
 opt.shiftwidth = 2;
 opt.signcolumn = "yes"
 opt.winborder = "rounded"
+opt.hlsearch = false
+opt.undofile = true
+opt.updatetime = 250
+opt.timeoutlen = 300
+opt.termguicolors = true
+opt.conceallevel = 2
+opt.cursorline = true
+opt.colorcolumn = "120"
+opt.scrolloff = 8
 vim.g.mapleader = " "
 
 ------------------------------------------------------------------------
@@ -37,18 +46,17 @@ imap("kk", "<ESC>", "Exit INSERT mode")
 ------------------------------------------------------------------------
 -- Plugins
 ------------------------------------------------------------------------
-require("plugins.autoclose").setup()
-local pmanager = require("plugins.plugin_manager")
+local pm = require("plugins.plugin_manager")
 
 -- Editor theme
-pmanager.plugin({
+pm.plugin({
   "olimorris/onedarkpro.nvim",
   skip_setup = true,
 })
 vim.cmd("colorscheme onedark")
 
 -- Syntax hightlighter
-pmanager.plugin({
+pm.plugin({
   "nvim-treesitter/nvim-treesitter",
   event = "BufReadPost",
   plug_setup_name = "nvim-treesitter.configs",
@@ -58,13 +66,13 @@ pmanager.plugin({
 });
 
 -- Predefined configuration for Laguage Servers
-pmanager.plugin({
+pm.plugin({
   "neovim/nvim-lspconfig",
   plug_setup_name = "lspconfig",
 })
 
 -- Completion feature
-pmanager.plugin({
+pm.plugin({
   "saghen/blink.cmp",
   version = "1.*",
   name = "blink",
@@ -77,7 +85,7 @@ pmanager.plugin({
 })
 
 -- Picker so I can pick files quick
-pmanager.plugin({
+pm.plugin({
   'echasnovski/mini.pick',
   opts = {
     keymaps = {
@@ -88,7 +96,7 @@ pmanager.plugin({
 })
 
 -- File explorer
-pmanager.plugin({
+pm.plugin({
   'echasnovski/mini.files',
   opts = {
     keymaps = {
@@ -98,18 +106,23 @@ pmanager.plugin({
 })
 
 -- Word under cursos hightlighter
-pmanager.plugin({
+pm.plugin({
   'echasnovski/mini.cursorword',
 })
 
 -- Custom hightlighter for TODO, NOTE, HACK, FIXME
-pmanager.plugin({
+pm.plugin({
   'echasnovski/mini.hipatterns',
 })
 
 -- Icons for ui
-pmanager.plugin({
+pm.plugin({
   'echasnovski/mini.icons',
+})
+
+-- Autoclose pair
+pm.plugin({
+  'echasnovski/mini.pairs',
 })
 
 ------------------------------------------------------------------------
@@ -125,7 +138,7 @@ local setup_lsp = function (config)
     }}, true, {})
     return
   end
-  
+
   local lsp_name = config.name or config[1]
   local lsp_settings = config.settings or {}
 
@@ -177,3 +190,7 @@ setup_lsp({
     }
   }
 })
+
+------------------------------------------------------------------------
+-- Autocommands
+------------------------------------------------------------------------
