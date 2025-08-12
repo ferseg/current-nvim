@@ -105,90 +105,66 @@ pm.plugin({
   }
 })
 
--- Word under cursos hightlighter
-pm.plugin({
+pm.no_config_plugins({
+  -- Word under cursos hightlighter
   'echasnovski/mini.cursorword',
-})
-
--- Custom hightlighter for TODO, NOTE, HACK, FIXME
-pm.plugin({
+  -- Custom hightlighter for TODO, NOTE, HACK, FIXME
   'echasnovski/mini.hipatterns',
-})
-
--- Icons for ui
-pm.plugin({
+  -- Icons for ui
   'echasnovski/mini.icons',
-})
-
--- Autoclose pair
-pm.plugin({
+  -- Autoclose pair
   'echasnovski/mini.pairs',
+  -- Status line
+  'echasnovski/mini.statusline',
 })
 
 ------------------------------------------------------------------------
 -- LSP
 ------------------------------------------------------------------------
---- Function that sets up an lsp server
--- @param config table
-local setup_lsp = function (config)
-  -- Input validation
-  if type(config) ~= "table" then
-    vim.api.nvim_echo({{
-      "Error: Invalid input. Expected a table for plugin_info.", "ErrorMsg"
-    }}, true, {})
-    return
-  end
+local lsp = require("plugins.lsp")
+lsp.setup(
+  {
+    -- Enable lua language server
+    { "lua_ls" },
 
-  local lsp_name = config.name or config[1]
-  local lsp_settings = config.settings or {}
-
-  local lsp_capabilities = vim.lsp.protocol.make_client_capabilities()
-  local blink_capabilities = require("blink.cmp").get_lsp_capabilities(lsp_capabilities)
-  lsp_settings.capabilities = blink_capabilities
-  vim.lsp.config(lsp_name, lsp_settings)
-  vim.lsp.enable(lsp_name)
-end
-
--- Enable lua language server
-setup_lsp({ "lua_ls" })
-
--- Enable rust laguage server
-setup_lsp({
-  "rust_analyzer",
-  settings = {
-    settings = {
-      ["rust-analyzer"] = {
-        -- Disables running `cargo check` on every save, which is a major performance hog
-        -- for large projects. This is often the most important setting.
-        checkOnSave = {
-          enable = false,
-        },
-        -- For inlay hints, which can sometimes be a bit heavy.
-        -- `rust-analyzer.inlayHints.enable` is a boolean.
-        -- `rust-analyzer.inlayHints.lifetimeElisions` and others can be configured separately.
-        inlayHints = {
-          enable = true,
-        },
-        -- Controls whether to generate new diagnostics for the entire workspace.
-        -- Setting this to `true` can be slow on startup.
-        cachePriming = {
-          enable = false,
-        },
-        -- If you have a large workspace with multiple crates, you might want to configure
-        -- how `rust-analyzer` handles them.
-        cargo = {
-          -- Prevents `rust-analyzer` from running build scripts automatically.
-          -- This can be a huge time-saver for projects with complex `build.rs` files.
-          runBuildScripts = false,
-        },
-        -- Manages how `rust-analyzer` handles flycheck, the on-the-fly checking of code.
-        -- Setting this to false can reduce CPU usage, but you'll get fewer immediate diagnostics.
-        check = {
-          allTargets = false,
-        },
+    -- Enable rust laguage server
+    {
+      "rust_analyzer",
+      opts = {
+        settings = {
+          ["rust-analyzer"] = {
+            -- Disables running `cargo check` on every save, which is a major performance hog
+            -- for large projects. This is often the most important setting.
+            checkOnSave = {
+              enable = false,
+            },
+            -- For inlay hints, which can sometimes be a bit heavy.
+            -- `rust-analyzer.inlayHints.enable` is a boolean.
+            -- `rust-analyzer.inlayHints.lifetimeElisions` and others can be configured separately.
+            inlayHints = {
+              enable = true,
+            },
+            -- Controls whether to generate new diagnostics for the entire workspace.
+            -- Setting this to `true` can be slow on startup.
+            cachePriming = {
+              enable = false,
+            },
+            -- If you have a large workspace with multiple crates, you might want to configure
+            -- how `rust-analyzer` handles them.
+            cargo = {
+              -- Prevents `rust-analyzer` from running build scripts automatically.
+              -- This can be a huge time-saver for projects with complex `build.rs` files.
+              runBuildScripts = false,
+            },
+            -- Manages how `rust-analyzer` handles flycheck, the on-the-fly checking of code.
+            -- Setting this to false can reduce CPU usage, but you'll get fewer immediate diagnostics.
+            check = {
+              allTargets = false,
+            },
+          }
+        }
       }
     }
-  }
 })
 
 ------------------------------------------------------------------------

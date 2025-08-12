@@ -49,9 +49,6 @@ local function try_setup_plugin(plugin_name, opts)
         if plugin and type(plugin.setup) == "function" then
             local setup_ok, setup_result = pcall(plugin.setup, opts or {})
             if setup_ok then
-                vim.api.nvim_echo({{
-                    "Plugin '" .. plugin_name .. "' setup completed successfully.", "MoreMsg"
-                }}, true, {})
                 setup_keymaps(opts.keymaps)
             else
                 vim.api.nvim_echo({{
